@@ -1,0 +1,101 @@
+#include "stdio.h"
+#include "locale.h"
+#include "stdlib.h"
+#include "time.h"
+
+
+int main(void) {
+	setlocale(LC_ALL, "Russian");
+	srand((unsigned int)time(NULL));
+	int n1 = 0;
+	int n2 = 0;
+	int randIn;
+	int A[50][50] = {0};
+
+	printf("Введите количество строк, содержащихся в желаемой матрице\n");
+	while (scanf_s("%d", &n1) != 1 || n1 > 50 || n1 <= 0 || getchar() != '\n') {
+		printf("Проверьте корректность введенных данных!");
+		rewind(stdin);
+	}
+	printf("Введите количество столбцов, содержащихся в желаемой матрице\n");
+	while (scanf_s("%d", &n2) != 1 || n2 > 50 || n2 <= 0 || getchar() != '\n') {
+		printf("Проверьте корректность введенных данных!");
+		rewind(stdin);
+	}
+
+	printf("Вы желаете заполнить матрицу вручную (1) или автоматически случайными числами (2)?\n");
+	while (scanf_s("%d", &randIn) != 1 || randIn != 1 && randIn != 2 || getchar() != '\n') {
+		printf("Проверьте корректность введенных данных!\n");
+		rewind(stdin);
+	}
+
+	switch (randIn) {
+	case 1:
+		for (int i = 0; i < n1; i++) {
+			for (int j = 0; j < n2; j++) {
+				printf("Введите элемент %d строки %d:\n", j + 1, i + 1);
+				while (scanf_s("%d", &A[i][j]) != 1 || getchar() != '\n') {
+					printf("Проверьте корректность введенных данных!");
+					rewind(stdin);
+				}
+			}
+		}
+		break;
+	case 2:
+		for (int i = 0; i < n1; i++) {
+			for (int j = 0; j < n2; j++) {
+				A[i][j] = rand() % 101;
+			}
+		}
+		break;
+	}
+
+	printf("Исходная матрица:\n");
+	for (int i = 0; i < n1; i++) {
+		for (int j = 0; j < n2; j++) {
+			printf("%d ", A[i][j]);
+		}
+		printf("\n");
+	}
+	 
+	int decrLine = 0;
+	int line = 0;
+	for (int i = 0; i < n1; i++) {
+		line = i;
+		int decr = 0;
+		for (int j = 1; j < n2; j++) {
+			if (A[i][j] < A[i][j - 1]) {
+				decr++;
+			}
+			else {
+				break;
+			}
+		}
+		if (decr == n2 - 1) {
+			decrLine = line + 1;
+			break;
+		}
+	}
+	if (decrLine == 0) {
+		printf("В матрице отсутствуют убывающие строки\n");
+	} else {
+		printf("Первая убывающая строка матрицы: %d\n", decrLine);
+
+		int boof;
+		for (int j = 0; j < n2 / 2; j++) {
+			boof = A[decrLine - 1][j];
+			A[decrLine - 1][j] = A[decrLine - 1][n2 - 1 - j];
+			A[decrLine - 1][n2 - 1 - j] = boof;
+			boof = 0;
+		}
+		printf("Конечная матрица:\n");
+		for (int i = 0; i < n1; i++) {
+			for (int j = 0; j < n2; j++) {
+				printf("%d ", A[i][j]);
+			}
+			printf("\n");
+		}
+	}
+
+	return 0;
+}

@@ -1,0 +1,111 @@
+#include "stdio.h"
+#include "locale.h"
+#include "stdlib.h"
+#include "time.h"
+
+
+int main(void) {
+	setlocale(LC_ALL, "Russian");
+	srand( (unsigned int)time(NULL) );
+    int A[50][50] = {0};
+	int n;
+	int randIn;
+
+	printf("   Введите количество элементов, которое содержит сторона желаемой прямоугольной матрицы\n");
+	while (scanf_s("%d", &n) != 1 || n > 50 || n <= 0 || getchar() != '\n') {
+		printf("Проверьте корректность введенных данных!\n");
+		rewind(stdin);
+	}
+
+	printf("   Вы желаете заполнить массив вручную (1) или автоматически случайными числами (2)?\n");
+	while (scanf_s("%d", &randIn) != 1 || randIn != 1 && randIn != 2 || getchar() != '\n') {
+		printf("Проверьте корректность введенных данных!\n");
+		rewind(stdin);
+	}
+	switch (randIn) {
+	case 1:
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				printf("   Введите элемент %d строки %d:\n", j + 1, i + 1);
+				while (scanf_s("%d", &A[i][j]) != 1 || getchar() != '\n') {
+					printf("Проверьте корректность введенных данных!\n");
+					rewind(stdin);
+				}
+			}
+		}
+		break;
+	case 2: 
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				A[i][j] = rand() % 101;
+			}
+		}
+		break;
+	}
+
+	printf("   Исходный массив:\n");
+	for (int i = 0; i < n; i++) {
+		printf("   ");
+		for (int j = 0; j < n; j++) {
+			printf("%d ", A[i][j]);
+		}
+		printf("\n");
+	}
+
+	int null = 0;
+	int noNullStr = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (A[i][j] == 0) {
+				null++;
+			}
+		}
+		if (null == 0) {
+			noNullStr++;
+		}
+		null = 0;
+	}
+	printf("\n   Количество строк, не содержащих ни одного нулевого элемента: %d\n\n", noNullStr);
+
+	int max = A[0][0];
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (A[i][j] > max) {
+				max = A[i][j];
+			}
+		}
+	}
+
+	int min = A[0][0];
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (A[i][j] < min) {
+				min = A[i][j];
+			}
+		}
+	}
+
+	int repMax = 0;
+	for (int k = max; k >= min; k--) {
+		int same = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (A[i][j] == k) {
+					same++;
+				}
+			}
+		}
+		if (same > 1) {
+			repMax = k;
+			break;
+		}
+	}
+	if (max != 0 && repMax == 0) {
+		printf("   В массиве отсутствуют повторяющиеся элементы\n");
+	}
+	else {
+		printf("   Максимальное повторяющееся число: %d\n", repMax);
+	}
+
+	return 0;
+}

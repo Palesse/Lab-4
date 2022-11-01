@@ -1,0 +1,64 @@
+#include "stdio.h"
+#include "locale.h"
+#include "stdlib.h"
+#include "time.h"
+
+int main(void) {
+	setlocale(LC_ALL, "Russian");
+	srand(time(NULL));
+	int A[50][50];
+	int n;
+	int randIn;
+	printf("Введите количество строк и столбцов, содержащихся в желаемой квадратной матрице:\n");
+	while (scanf_s("%d", &n) != 1 || n > 50 || n <= 0 || getchar() != '\n') {
+		printf("Проверьте корректность введенных данных!\n");
+		rewind(stdin);
+	}
+
+	printf("Вы желаете заполнить матрицу вручную (1) или автоматически, случайными числами (2) ?\n");
+	while (scanf_s("%d", &randIn) != 1 || randIn != 1 && randIn != 2 || getchar() != '\n') {
+		printf("Проверьте корректность введенных данных!\n");
+		rewind(stdin);
+	}
+
+	switch (randIn) {
+	case 1: 
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				printf("Введите элемент %d строки %d:\n", j + 1, i + 1);
+				while (scanf_s("%d", &A[i][j]) != 1 || getchar() != '\n') {
+					printf("Проверьте корректность введенных данных!\n");
+					rewind(stdin);
+				}
+			}
+		}
+		break;
+	case 2: 
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				A[i][j] =  rand() % 101;
+			}
+		}
+		break;
+	}
+	printf("Исходный массив:\n");
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			printf("%d ", A[i][j]);
+		}
+		printf("\n");
+	}
+
+	int start = 0;
+	int sum = 0;
+	for (int j = 0; j <= n / 2; j++) {
+		for (int i = start; i < n - start; i++) {
+			sum = sum + A[i][j];
+		}
+		start++;
+	}
+
+	printf("Сумма элементов: %d\n", sum);
+
+	return 0;
+}
